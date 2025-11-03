@@ -1,0 +1,232 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+/* App.css */
+/* Container utama */
+body{
+  background-color: rgb(240, 246, 247);
+}
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* Form settings satu kolom */
+.settings {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  width: 350px;
+  margin: auto;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+label {
+  display: flex;
+  text-align: start;
+  flex-direction: column;
+  font-weight: 500;
+  color: #333;
+}
+
+input[type="text"] {
+  padding: 10px 12px;
+  margin-top: 6px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: black;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Wrapper untuk catatan agar bisa 3 kolom */
+.notes-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+/* Card catatan */
+.card {
+  display: flex;
+  flex-direction: column;
+  max-width: 32%;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  justify-content: space-around;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.card-body {
+  font-size: 1rem;
+  color: #555;
+  text-align: start;
+  margin-bottom: 12px;
+}
+
+.card-date {
+  font-size: 0.875rem;
+  color: #888;
+  text-align: right;
+}
+
+/* Responsif untuk mobile */
+@media (max-width: 768px) {
+  .card {
+    max-width: 100%;
+  }
+}
+.archived-tag {
+  display: block;
+  min-width: 50px;
+  max-width: 100px;
+  background-color: #fbe8b4;
+  color: #333;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+/* Container label */
+label[for="archived"] {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+/* Select dropdown */
+#archived {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 0.9rem;
+  color: #333;
+  transition: border-color 0.2s ease;
+}
+
+/* Hover and focus effect */
+#archived:hover,
+#archived:focus {
+  outline: none;
+}
+
+/* Optional: style each option */
+#archived option {
+  padding: 6px;
+  background-color: #fff;
+  color: #333;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+/* Optional: styling tambahan */
+.card-date {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.search-wrapper {
+  margin-bottom: 1rem;
+}
+
+.search-label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.search-label input[type="text"] {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.search-label input[type="text"]:focus {
+  border-color: #f0c040;
+  outline: none;
+}

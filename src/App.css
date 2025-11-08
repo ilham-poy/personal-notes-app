@@ -177,6 +177,8 @@ label[for="archived"] {
   transition: border-color 0.2s ease;
 }
 
+
+
 /* Hover and focus effect */
 #archived:hover,
 #archived:focus {
@@ -194,7 +196,7 @@ label[for="archived"] {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 12px;
+  margin-bottom: 8px;
 }
 
 /* Optional: styling tambahan */
@@ -229,4 +231,171 @@ label[for="archived"] {
 .search-label input[type="text"]:focus {
   border-color: #f0c040;
   outline: none;
+}
+
+.detail-link {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #fbe8b4; /* aksen kuning lembut */
+  color: #000; /* teks hitam */
+  font-size: 14px;
+  margin-top: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid #000;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.detail-link:hover {
+  background-color: #fff;
+  color: #000;
+  transform: scale(1.03);
+}
+
+.detail-link:active {
+  background-color: #fbe8b4;
+  transform: scale(0.97);
+}
+
+
+.note-detail-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.note-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.note-edit-btn {
+  padding: 8px 16px;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.note-edit-btn:hover {
+  background-color: #4338ca;
+}
+
+.note-meta {
+  font-size: 14px;
+  color: #777;
+  margin-top: 8px;
+}
+
+.note-content {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.note-delete-btn,
+.note-back-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.note-delete-btn {
+  background-color: #e11d48;
+  color: white;
+}
+
+.note-delete-btn:hover {
+  background-color: #be123c;
+}
+
+.note-back-btn {
+  background-color: #e5e7eb;
+  color: #333;
+}
+
+.note-back-btn:hover {
+  background-color: #d1d5db;
+}
+
+.empty-note-message {
+  padding: 20px;
+  margin: 40px auto;
+  max-width: 600px;
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  background-color: #f9f9f9;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  font-family: sans-serif;
+}
+
+.archive-radio-group {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.archive-radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 5px 8px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #ffffff;
+  color: #000;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hilangkan radio bawaan browser */
+.archive-radio input[type="radio"] {
+  display: none;
+}
+
+/* Saat label diklik dan radio-nya checked */
+.archive-radio input[type="radio"]:checked + span {
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* Tambah efek hover */
+.archive-radio span {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.archive-radio:hover span {
+  border-color: #000;
 }

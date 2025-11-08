@@ -376,12 +376,11 @@ label[for="archived"] {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Hilangkan radio bawaan browser */
 .archive-radio input[type="radio"] {
   display: none;
 }
 
-/* Saat label diklik dan radio-nya checked */
+/* ngecek kondisi checked di halaman archive klo true jalankan */
 .archive-radio input[type="radio"]:checked + span {
   background-color: #000;
   color: #fff;

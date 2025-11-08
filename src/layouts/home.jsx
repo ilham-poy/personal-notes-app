@@ -10,29 +10,26 @@ import SearchComponent from '../components/search';
 export default function HomePage() {
     const [notes, setNotes] = useState([]);
     const [filteredNotes, setFilteredNotes] = useState([]);
-    const [updatedNotes, setUpdatedNotes] = useState();
+    const [archiveFilter, setArchiveFilter] = useState(null);
 
     useEffect(() => {
         const savedNotes = JSON.parse(localStorage.getItem('notes'));
 
-        //cek ada data di local storage
         if (savedNotes && savedNotes.length > 0) {
             setNotes(savedNotes);
-
-
-        } else {// kalo ga ada buat itemnya
+        } else {
             const initialData = getInitialData();
             setNotes(initialData);
             localStorage.setItem('notes', JSON.stringify(initialData));
         }
     }, []);
 
-
     function handleCreate(newNote) {
         const noteWithDate = {
             ...newNote,
             id: +new Date(),
             createdAt: new Date().toISOString(),
+            archived: newNote.archived || false,
         };
         const updatedNotes = [...notes, noteWithDate];
 
@@ -46,29 +43,30 @@ export default function HomePage() {
         localStorage.setItem('notes', JSON.stringify(updatedNotes));
     }
 
-
-
     function handleSearch(keyword) {
-        //cek kalo keyword kosong maka return
         if (!keyword.trim()) {
             setFilteredNotes([]);
             return;
         }
-
         const lowerKeyword = keyword.toLowerCase();
         const results = notes.filter((note) =>
             note.title.toLowerCase().includes(lowerKeyword)
         );
-
         setFilteredNotes(results);
     }
+
     function handleArchive(status) {
-        const filtered = notes.filter(note => note.archived === status);
-        setFilteredNotes(filtered);
+        setArchiveFilter(status);
     }
 
+    // filter  dulu berdasarkan length
+    const filtered = (filteredNotes.length > 0 ? filteredNotes : notes).filter(
+        (note) =>
 
-    const displayNotes = filteredNotes.length > 0 ? filteredNotes : notes;
+            // kemudian filter dan check keadan archivefilter dari function handleArchive(status)
+            // setArchiveFilter(status) === archiveFilter
+            archiveFilter === null ? true : note.archived === archiveFilter
+    );
 
     return (
         <div className="container">
@@ -77,8 +75,8 @@ export default function HomePage() {
             <SearchComponent onSearch={handleSearch} />
 
             <div className="notes-wrapper">
-                {displayNotes.length > 0 ? (
-                    displayNotes.map((data) => (
+                {filtered.length > 0 ? (
+                    filtered.map((data) => (
                         <div className="card" key={data.id}>
                             {data.archived ? (
                                 <div className="card-tag archived-tag">📦 Archived</div>

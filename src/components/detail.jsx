@@ -14,7 +14,7 @@ export default function DetailNotePage() {
             (note) => String(note.id) === String(id)
         );
         setDetailNote(foundNote);
-    }, [id]);
+    }, [notes]);
 
     if (!detailDataNote) {
         return <p>Note tidak ditemukan.</p>;

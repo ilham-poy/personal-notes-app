@@ -6,6 +6,8 @@ function NotesControl({ onCreate }) {
     const [archived, setArchived] = useState(false);
     const [form, setForm] = useState({ title: "", body: "" });
     const [message, setMessage] = useState("");
+
+    const [isLoading, setIsLoading] = useState(null);
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -13,7 +15,9 @@ function NotesControl({ onCreate }) {
         e.preventDefault();
 
         try {
+            setIsLoading(true)
             const token = localStorage.getItem("notes-token");
+
 
             const res = await fetch("https://notes-api.dicoding.dev/v1/notes", {
                 method: "POST",
@@ -38,7 +42,9 @@ function NotesControl({ onCreate }) {
                     const newNotes = [...oldNotes, result.data];
                     localStorage.setItem("notes", JSON.stringify(newNotes));
                 }
-
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 1000)
                 setForm({ title: "", body: "" });
             } else {
                 setMessage(result.message);
@@ -51,6 +57,13 @@ function NotesControl({ onCreate }) {
 
     return (
         <div className="settings">
+            {isLoading && (
+                <div className="loading-overlay">
+                    <div className="loading-popup">
+                        Loading...
+                    </div>
+                </div>
+            )}
             <form onSubmit={handleSubmit}>
                 <label htmlFor="title">
                     Judul

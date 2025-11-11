@@ -17,6 +17,8 @@ export default function LoginPage() {
         }
 
         try {
+            setIsLoading(true)
+
             const res = await fetch("https://notes-api.dicoding.dev/v1/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -29,7 +31,11 @@ export default function LoginPage() {
             if (result.status === "success") {
                 setMessage(result.message);
                 localStorage.setItem('notes-token', result.data.accessToken);
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 1000)
                 setForm({ name: "", email: "", password: "" });
+
             } else {
                 setMessage(result.message);
             }
@@ -40,6 +46,13 @@ export default function LoginPage() {
 
     return (
         <div className="register-container">
+            {isLoading && (
+                <div className="loading-overlay">
+                    <div className="loading-popup">
+                        Loading...
+                    </div>
+                </div>
+            )}
             <h2 className="register-title">Login</h2>
             <form onSubmit={handleSubmit} className="register-form">
                 <input

@@ -64,10 +64,14 @@ export default function HomePage() {
                     }
 
                     localStorage.setItem('notes', JSON.stringify(savedNotes));
-                    setIsLoading(false)
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 1000)
 
                 } else {
-                    setIsLoading(false)
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 1000)
 
                     setMessage("Failed to fetch notes.");
                 }
@@ -112,10 +116,13 @@ export default function HomePage() {
                 const updatedNotes = notes.filter((note) => note.id !== id);
                 setNotes(updatedNotes);
                 localStorage.setItem('notes', JSON.stringify(updatedNotes));
-                setIsLoading(false)
-
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 1000)
             } else {
-                setIsLoading(false)
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 1000)
                 setMessage(result.message);
 
             }
@@ -146,6 +153,7 @@ export default function HomePage() {
     function handleNoteArchive(id, isArchived) {
         const toggleArchive = async () => {
             try {
+                setIsLoading(true)
                 const token = localStorage.getItem("notes-token");
 
                 const url = isArchived
@@ -159,7 +167,7 @@ export default function HomePage() {
                         "Authorization": `Bearer ${token}`
                     },
                 });
-                setIsLoading(true)
+
 
                 const result = await res.json();
 
@@ -178,10 +186,13 @@ export default function HomePage() {
 
                     localStorage.setItem('notes', JSON.stringify(updatedNotes));
                     setNotes(updatedNotes);
-                    setIsLoading(false)
-
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 1000)
                 } else {
-                    setIsLoading(false)
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 1000)
 
                     setMessage("Failed to update archive status.");
                 }
@@ -197,8 +208,15 @@ export default function HomePage() {
 
 
     return (
-
         <div className="container">
+            {isLoading && (
+                <div className="loading-overlay">
+                    <div className="loading-popup">
+                        Loading...
+                    </div>
+                    disable click
+                </div>
+            )}
             <button onClick={toggleTheme}>
                 Switch to {theme === "light" ? "Dark" : "Light"} Mode
             </button>
@@ -207,7 +225,6 @@ export default function HomePage() {
             <NotesControl onCreate={handleCreate} />
             <ComponentArchive onStatus={handleArchive} />
             <SearchComponent onSearch={handleSearch} />
-
             <div className="notes-wrapper">
                 {notes.length > 0 ? (
                     notes

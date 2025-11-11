@@ -5,7 +5,8 @@ export default function DetailNotePage() {
     const { id } = useParams();
     const location = useLocation();
     const [detailDataNote, setDetailNote] = useState(null);
-    const [notes, setNotes] = useState([])
+    const [notes, setNotes] = useState([]);
+    const [isLoading, setIsLoading] = useState(null);
     //  Jika tidak ada state, ambil dari localStorage
     // useEffect(() => {
     //     const allNotes = JSON.parse(localStorage.getItem('notes')) || [];
@@ -20,6 +21,8 @@ export default function DetailNotePage() {
     useEffect(() => {
         const fetchNotes = async () => {
             try {
+                setIsLoading(true)
+
                 const token = localStorage.getItem("notes-token");
                 const res = await fetch(`https://notes-api.dicoding.dev/v1/notes/${id}`, {
                     method: "GET",
@@ -36,7 +39,11 @@ export default function DetailNotePage() {
                     const foundNote = allNotes.find(
                         (note) => String(note.id) === String(id)
                     );
+
                     setDetailNote(foundNote);
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 1000)
                 } else {
                     setMessage("Failed to fetch notes.");
                 }
@@ -64,6 +71,13 @@ export default function DetailNotePage() {
 
     return (
         <div className="note-detail-container">
+            {isLoading && (
+                <div className="loading-overlay">
+                    <div className="loading-popup">
+                        Loading...
+                    </div>
+                </div>
+            )}
             <div className="note-header">
                 <h1 className="note-title">{detailDataNote.title}</h1>
             </div>

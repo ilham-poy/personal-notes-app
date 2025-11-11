@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 export default function RegisterPage() {
     const [form, setForm] = useState({ name: "", email: "", password: "" });
     const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(null);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,6 +20,7 @@ export default function RegisterPage() {
         }
 
         try {
+            setIsLoading(true)
             const res = await fetch("https://notes-api.dicoding.dev/v1/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -30,7 +32,11 @@ export default function RegisterPage() {
             if (result.status === "success") {
                 setMessage(result.message);
                 localStorage.setItem('notes-token', result.data.accessToken);
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 1000)
                 setForm({ name: "", email: "", password: "" });
+
             } else {
                 setMessage(result.message);
             }
@@ -41,6 +47,13 @@ export default function RegisterPage() {
 
     return (
         <div className="register-container">
+            {isLoading && (
+                <div className="loading-overlay">
+                    <div className="loading-popup">
+                        Loading...
+                    </div>
+                </div>
+            )}
             <h2 className="register-title">Register</h2>
             <form onSubmit={handleSubmit} className="register-form">
                 <input

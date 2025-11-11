@@ -7,6 +7,8 @@ import NotesControl from '../components/create';
 import DeleteNote from '../components/delete';
 import SearchComponent from '../components/search';
 import useAuthMiddleware from '../auth/auth';
+import { useContext } from "react";
+import { ThemeContext } from '../context';
 
 export default function HomePage() {
     useAuthMiddleware();
@@ -14,9 +16,10 @@ export default function HomePage() {
     const [notes, setNotes] = useState([]);
     const [archiveNotes, setArchiveNotes] = useState([]);
     const [filteredNotes, setFilteredNotes] = useState([]);
-
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [archiveFilter, setArchiveFilter] = useState(null);
     const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(null);
 
 
 
@@ -32,84 +35,49 @@ export default function HomePage() {
     //         localStorage.setItem('notes', JSON.stringify(initialData));
     //     }
     // }, []);
-    if (archiveFilter === true) {
-        useEffect(() => {
-            const fetchNotes = async () => {
-                try {
-                    const token = localStorage.getItem("notes-token");
+    useEffect(() => {
+        const fetchNotes = async () => {
 
-                    const res = await fetch("https://notes-api.dicoding.dev/v1/notes/archived", {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`
-                        },
-                    });
+            try {
+                const token = localStorage.getItem("notes-token");
+                const url = archiveFilter
+                    ? "https://notes-api.dicoding.dev/v1/notes/archived"
+                    : "https://notes-api.dicoding.dev/v1/notes";
 
-                    const result = await res.json();
-                    if (result.status === "success") {
-                        const savedNotes = JSON.parse(localStorage.getItem('notes'));
-                        if (savedNotes && savedNotes.length > 0) {
-                            savedNotes.filter(note => note.archived === true)
-                            setArchiveNotes(savedNotes);
-                        } else {
-                            // const initialData = getInitialData();
-                            setArchiveNotes([]);
-                            localStorage.setItem('notes', JSON.stringify([]));
-                        }
+                const res = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                });
+                setIsLoading(true)
+                const result = await res.json();
+
+                if (result.status === "success") {
+
+                    const savedNotes = result.data;
+                    if (archiveFilter) {
+                        setArchiveNotes(savedNotes);
                     } else {
-                        setMessage("Failed to fetch notes.");
+                        setNotes(savedNotes);
                     }
-                } catch (error) {
-                    setMessage("Please try again.");
-                }
-            };
 
-            if (archiveFilter !== null) {
-                fetchNotes();
+                    localStorage.setItem('notes', JSON.stringify(savedNotes));
+                    setIsLoading(false)
+
+                } else {
+                    setIsLoading(false)
+
+                    setMessage("Failed to fetch notes.");
+                }
+            } catch (error) {
+                setMessage("Please try again.");
             }
-        }, [archiveFilter]);
-    } else {
-        useEffect(() => {
-            const fetchNotes = async () => {
-                try {
-                    const token = localStorage.getItem("notes-token");
+        };
 
-                    const res = await fetch("https://notes-api.dicoding.dev/v1/notes", {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`
-                        },
-                    });
-
-                    const result = await res.json();
-
-                    if (result.status === "success") {
-                        const savedNotes = JSON.parse(localStorage.getItem('notes'));
-                        if (savedNotes && savedNotes.length > 0) {
-                            setNotes(savedNotes);
-                        } else {
-                            // const initialData = getInitialData();
-                            setNotes([]);
-                            localStorage.setItem('notes', JSON.stringify([]));
-                        }
-                    } else {
-                        setMessage("Failed to fetch notes.");
-                    }
-                } catch (error) {
-                    setMessage("Please try again.");
-                }
-            };
-
-            fetchNotes();
-        }, [notes]);
-    }
-
-
-
-
-
+        fetchNotes();
+    }, [archiveFilter]);
 
 
 
@@ -125,12 +93,38 @@ export default function HomePage() {
         setNotes(updatedNotes);
         localStorage.setItem('notes', JSON.stringify(updatedNotes));
     }
+    const handleDelete = async (id) => {
 
-    function handleDelete(id) {
-        const updatedNotes = notes.filter((note) => note.id !== id);
-        setNotes(updatedNotes);
-        localStorage.setItem('notes', JSON.stringify(updatedNotes));
+        try {
+            const token = localStorage.getItem("notes-token");
+            const res = await fetch(`https://notes-api.dicoding.dev/v1/notes/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            setIsLoading(true)
+
+            const result = await res.json();
+            console.log(result)
+            if (result.status === "success") {
+                const updatedNotes = notes.filter((note) => note.id !== id);
+                setNotes(updatedNotes);
+                localStorage.setItem('notes', JSON.stringify(updatedNotes));
+                setIsLoading(false)
+
+            } else {
+                setIsLoading(false)
+                setMessage(result.message);
+
+            }
+        } catch (error) {
+            setMessage("Registration failed. Please try again.");
+        }
     }
+
+
 
     function handleSearch(keyword) {
         if (!keyword.trim()) {
@@ -149,18 +143,23 @@ export default function HomePage() {
     }
 
 
-    function handleNoteArchive(id) {
-        const fetchNotes = async () => {
+    function handleNoteArchive(id, isArchived) {
+        const toggleArchive = async () => {
             try {
                 const token = localStorage.getItem("notes-token");
 
-                const res = await fetch(`https://notes-api.dicoding.dev/v1/notes/${id}/archive`, {
+                const url = isArchived
+                    ? `https://notes-api.dicoding.dev/v1/notes/${id}/unarchive`
+                    : `https://notes-api.dicoding.dev/v1/notes/${id}/archive`;
+
+                const res = await fetch(url, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
                 });
+                setIsLoading(true)
 
                 const result = await res.json();
 
@@ -179,53 +178,53 @@ export default function HomePage() {
 
                     localStorage.setItem('notes', JSON.stringify(updatedNotes));
                     setNotes(updatedNotes);
+                    setIsLoading(false)
+
                 } else {
-                    setMessage("Failed to fetch notes.");
+                    setIsLoading(false)
+
+                    setMessage("Failed to update archive status.");
                 }
             } catch (error) {
                 setMessage("Please try again.");
             }
         };
 
-        fetchNotes();
+        toggleArchive();
     }
 
-    // filter  dulu berdasarkan length
+
 
 
     return (
+
         <div className="container">
+            <button onClick={toggleTheme}>
+                Switch to {theme === "light" ? "Dark" : "Light"} Mode
+            </button>
+            <br />
+            <br />
             <NotesControl onCreate={handleCreate} />
             <ComponentArchive onStatus={handleArchive} />
             <SearchComponent onSearch={handleSearch} />
 
             <div className="notes-wrapper">
                 {notes.length > 0 ? (
-                    archiveFilter ? (
-                        notes.filter(note => archived === true).map((data) => (
+                    notes
+                        .filter(note => note.archived === archiveFilter)
+                        .map((data) => (
                             <div className="card" key={data.id}>
-                                {data.archived ? (
-                                    <div className="card-tag archived-tag">📦 Archived</div>
-                                ) : (
-                                    <div className="card-tag archived-tag">📌 Digunakan</div>
-                                )}
+                                <div className="card-tag archived-tag">
+                                    {data.archived ? "📦 Archived" : "📌 Digunakan"}
+                                </div>
                                 <div className="card-title">{data.title}</div>
                                 <div className="card-body">{data.body}</div>
                                 <div className="card-footer">
                                     <DeleteNote onDelete={() => handleDelete(data.id)} />
-                                    <p>
-                                        -
-                                    </p>
-                                    {data.archived ? (
-                                        <button onClick={() => handleNoteArchive(data.id)}>
-                                            Buka Arsip
-                                        </button>
-                                    ) : (
-                                        <button onClick={() => handleNoteArchive(data.id)}>
-                                            Arsipkan
-                                        </button>
-                                    )}
-
+                                    <p>-</p>
+                                    <button onClick={() => handleNoteArchive(data.id, data.archived)}>
+                                        {data.archived ? "Buka Arsip" : "Arsipkan"}
+                                    </button>
                                     <div className="card-date">
                                         {showFormattedDate(data.createdAt)}
                                     </div>
@@ -239,50 +238,11 @@ export default function HomePage() {
                                 </Link>
                             </div>
                         ))
-                    ) : (
-                        notes.filter(note => archived === false).map((data) => (
-                            <div className="card" key={data.id}>
-                                {data.archived ? (
-                                    <div className="card-tag archived-tag">📦 Archived</div>
-                                ) : (
-                                    <div className="card-tag archived-tag">📌 Digunakan</div>
-                                )}
-                                <div className="card-title">{data.title}</div>
-                                <div className="card-body">{data.body}</div>
-                                <div className="card-footer">
-                                    <DeleteNote onDelete={() => handleDelete(data.id)} />
-                                    <p>
-                                        -
-                                    </p>
-                                    {data.archived ? (
-                                        <button onClick={() => handleNoteArchive(data.id)}>
-                                            Buka Arsip
-                                        </button>
-                                    ) : (
-                                        <button onClick={() => handleNoteArchive(data.id)}>
-                                            Arsipkan
-                                        </button>
-                                    )}
-
-                                    <div className="card-date">
-                                        {showFormattedDate(data.createdAt)}
-                                    </div>
-                                </div>
-                                <Link
-                                    to={`/note/${data.id}`}
-                                    state={{ note: data }}
-                                    className="detail-link"
-                                >
-                                    Detail
-                                </Link>
-                            </div>
-                        ))
-                    )
-
                 ) : (
                     <div className="empty-note-message">Tidak ada catatan</div>
                 )}
             </div>
         </div>
+
     );
 }

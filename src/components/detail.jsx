@@ -7,14 +7,45 @@ export default function DetailNotePage() {
     const [detailDataNote, setDetailNote] = useState(null);
     const [notes, setNotes] = useState([])
     //  Jika tidak ada state, ambil dari localStorage
-    useEffect(() => {
-        const allNotes = JSON.parse(localStorage.getItem('notes')) || [];
+    // useEffect(() => {
+    //     const allNotes = JSON.parse(localStorage.getItem('notes')) || [];
 
-        const foundNote = allNotes.find(
-            (note) => String(note.id) === String(id)
-        );
-        setDetailNote(foundNote);
-    }, [notes]);
+    //     const foundNote = allNotes.find(
+    //         (note) => String(note.id) === String(id)
+    //     );
+    //     setDetailNote(foundNote);
+    // }, [notes]);
+
+
+    useEffect(() => {
+        const fetchNotes = async () => {
+            try {
+                const token = localStorage.getItem("notes-token");
+                const res = await fetch(`https://notes-api.dicoding.dev/v1/notes/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                });
+
+                const result = await res.json();
+                console.log(result)
+                if (result.status === "success") {
+                    const allNotes = JSON.parse(localStorage.getItem('notes'));
+                    const foundNote = allNotes.find(
+                        (note) => String(note.id) === String(id)
+                    );
+                    setDetailNote(foundNote);
+                } else {
+                    setMessage("Failed to fetch notes.");
+                }
+            } catch (error) {
+                setMessage("Please try again.");
+            }
+        };
+        fetchNotes();
+    }, []);
 
     if (!detailDataNote) {
         return <p>Note tidak ditemukan.</p>;

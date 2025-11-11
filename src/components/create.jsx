@@ -4,15 +4,50 @@ function NotesControl({ onCreate }) {
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
     const [archived, setArchived] = useState(false);
-    function handleSubmit(e) {
+    const [form, setForm] = useState({ title: "", body: "" });
+    const [message, setMessage] = useState("");
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (title.trim() && body.trim()) {
-            onCreate({ title, body, archived });
-            setTitle('');
-            setBody('');
-            setArchived(false);
+
+        try {
+            const token = localStorage.getItem("notes-token");
+
+            const res = await fetch("https://notes-api.dicoding.dev/v1/notes", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(form),
+            });
+
+            const result = await res.json();
+            console.log(result)
+
+            if (result.status === "success") {
+                setMessage(result.message);
+                if (!localStorage.getItem("notes")) {
+                    const data = []
+                    data.push(result.data);
+                    localStorage.setItem("notes", JSON.stringify(data));
+                } else {
+                    const oldNotes = JSON.parse(localStorage.getItem("notes"));
+                    const newNotes = [...oldNotes, result.data];
+                    localStorage.setItem("notes", JSON.stringify(newNotes));
+                }
+
+                setForm({ title: "", body: "" });
+            } else {
+                setMessage(result.message);
+            }
+        } catch (error) {
+            setMessage("Registration failed. Please try again.");
         }
-    }
+    };
+
 
     return (
         <div className="settings">
@@ -22,9 +57,9 @@ function NotesControl({ onCreate }) {
                     <input
                         type="text"
                         id="title"
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
-                        maxLength={70}
+                        name="title"
+                        value={form.title}
+                        onChange={handleChange}
                     />
                     <p className="char-count">Maks : {title.length}/70 karakter</p>
                 </label>
@@ -33,21 +68,23 @@ function NotesControl({ onCreate }) {
                     <input
                         type="text"
                         id="body"
-                        value={body}
-                        onChange={e => setBody(e.target.value)}
+                        name="body"
+                        value={form.body}
+                        onChange={handleChange}
                     />
                 </label>
-                <label htmlFor="archived">
+                {/* <label htmlFor="archived">
                     Status Arsip
                     <select
                         id="archived"
-                        value={archived ? "true" : "false"} // tampil di UI tetap string
-                        onChange={e => setArchived(e.target.value === "true")} // ubah ke boolean
+                        name='archived'
+                        value={form.archived}
+                        onChange={handleChange}
                     >
                         <option value="true">Archived</option>
                         <option value="false">Not Archived</option>
                     </select>
-                </label>
+                </label> */}
                 <button type="submit">
                     Tambahkan Catatan
                 </button>

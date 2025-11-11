@@ -1,4 +1,3 @@
-// ThemeProvider.js
 import { useState, useEffect } from "react";
 import { ThemeContext } from "../context";
 
@@ -15,7 +14,7 @@ export const TemaProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        document.body.setAttribute("data-theme", theme); // opsional: untuk styling global
+        document.body.setAttribute("data-theme", theme);
     }, [theme]);
 
     return (

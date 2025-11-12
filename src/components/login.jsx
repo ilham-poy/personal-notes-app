@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 export default function LoginPage() {
     const [form, setForm] = useState({ email: "", password: "" });
     const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(null);
+
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,6 +35,7 @@ export default function LoginPage() {
                 localStorage.setItem('notes-token', result.data.accessToken);
                 setTimeout(() => {
                     setIsLoading(false)
+                    window.location.href = '/'
                 }, 1000)
                 setForm({ name: "", email: "", password: "" });
 
@@ -73,7 +76,7 @@ export default function LoginPage() {
                     required
                     className="register-input"
                 />
-                <button type="submit" className="register-button">Create Account</button>
+                <button type="submit" className="register-button">Login</button>
             </form>
             <p>
                 Belum Punya Account ? Register <Link to='/auth/register'> here</Link>

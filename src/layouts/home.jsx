@@ -20,10 +20,13 @@ export default function HomePage() {
     const [archiveFilter, setArchiveFilter] = useState(null);
     const [message, setMessage] = useState("");
     const [isLoading, setIsLoading] = useState(null);
+    const user = JSON.parse(localStorage.getItem("user"));
 
 
 
 
+
+    console.log(user)
     // useEffect(() => {
     //     const savedNotes = JSON.parse(localStorage.getItem('notes'));
 
@@ -217,6 +220,9 @@ export default function HomePage() {
                     disable click
                 </div>
             )}
+            <h1>Selamat Datang "{user?.name}"</h1>
+            <br />
+
             <button onClick={toggleTheme}>
                 Switch to {theme === "light" ? "Dark" : "Light"} Mode
             </button>

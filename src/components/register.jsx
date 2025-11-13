@@ -34,10 +34,9 @@ export default function RegisterPage() {
                 localStorage.setItem('notes-token', result.data.accessToken);
                 setTimeout(() => {
                     setIsLoading(false)
-                    window.location.href = '/'
+                    window.location.href = '/auth/login'
                 }, 1000)
                 setForm({ name: "", email: "", password: "" });
-
             } else {
                 setMessage(result.message);
             }

@@ -34,9 +34,27 @@ export default function LoginPage() {
                 setMessage(result.message);
                 localStorage.setItem('notes-token', result.data.accessToken);
                 setTimeout(() => {
-                    setIsLoading(false)
-                    window.location.href = '/'
-                }, 1000)
+                    (async () => {
+                        setIsLoading(false);
+                        try {
+                            const token = localStorage.getItem("notes-token");
+                            const res = await fetch("https://notes-api.dicoding.dev/v1/users/me", {
+                                method: "GET",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${token}`
+                                },
+                            });
+
+                            const result = await res.json();
+                            console.log(result);
+                            localStorage.setItem('user', JSON.stringify(result.data));
+                            window.location.href = '/'
+                        } catch (error) {
+                            console.error("Fetch failed:", error);
+                        }
+                    })();
+                }, 1000);
                 setForm({ name: "", email: "", password: "" });
 
             } else {

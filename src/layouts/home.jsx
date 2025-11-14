@@ -207,7 +207,19 @@ export default function HomePage() {
         toggleArchive();
     }
 
+    function handleLogout() {
+        try {
+            setIsLoading(true)
+            setTimeout(() => {
+                localStorage.removeItem('notes-token')
 
+                setIsLoading(false)
+                window.location.href = '/auth/login'
+            }, 300)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
 
     return (
@@ -222,12 +234,15 @@ export default function HomePage() {
             )}
             <h1>Selamat Datang "{user?.name}"</h1>
             <br />
-
+            <button onClick={handleLogout}>Logout</button>
+            <br />
+            <br />
             <button onClick={toggleTheme}>
                 Switch to {theme === "light" ? "Dark" : "Light"} Mode
             </button>
             <br />
             <br />
+
             <NotesControl onCreate={handleCreate} />
             <ComponentArchive onStatus={handleArchive} />
             <SearchComponent onSearch={handleSearch} />
